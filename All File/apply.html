@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="./style.css">
+    <title>Apply online</title>
+</head>
+<body>
+    <div>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="./home.html"><img class="icon" src="./Image/Logo.png" alt=""></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active ml-5 font-weight-bold">
+              <a class="nav-link" href="./home.html">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle font-weight-bold" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Teachers
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="./cse.html">CSE</a>
+                <a class="dropdown-item" href="./eee.html">EEE</a>
+                <a class="dropdown-item" href="./bba.html">BBA</a>
+                <a class="dropdown-item" href="./addTeacher.html">Add Teacher</a>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle font-weight-bold" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Materials
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="./apply.html">Apply Online</a>
+                  <a class="dropdown-item" href="./apllicationList.html">Research List</a>
+                </div>
+              </li>
+            <li class="nav-item active ml-3 font-weight-bold">
+              <a class="nav-link" href="./about.html">About Us</a>
+            </li>
+            <li class="nav-item active ml-3 font-weight-bold">
+                <a class="nav-link" href="./contact.html">Contact Us</a>
+              </li>
+          </ul>
+          <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          </form>
+          <button class="btn btn-danger my-2 my-sm-0" style="margin-left: 5px;" onclick="logout()">Log Out</button>
+        </div>
+      </nav>
+      <!-- navbar end here -->
+          <section>
+              <div class="banner">
+
+              </div>
+              <div class="gub-contact mt-5">
+                <p>Research assistant application form</p>
+             </div>
+              <div class="container form">
+                <form action="#" onsubmit="formData();return false">
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" id="name" placeholder="Name.." name="name" required>
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" placeholder="Email.." name="email" required>
+                      </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                          <label for="s_id">Student Id</label>
+                          <input type="text" class="form-control" id="s_id" placeholder="Student Id.." name="s_id" required>
+                        </div>
+                        <div class="col-md-6">
+                            <select onchange="selectTeacher()" class="select-form" aria-label="Default select example" id="teacher" name="teacher_name" required>
+                                <option selected>Select Teacher</option>
+                            </select>
+                        </div>
+                      </div>
+                    <div class="form-group">
+                        <label for="message">Research Topic Details</label>
+                        <textarea class="form-control" id="message" rows="6" name="message" required></textarea>
+                    </div>
+                    <input style="float: right;" class="btn btn-secondary" type="submit" name="submit" value="Submit Application">
+                    <br><br>
+                  </form>
+              </div>
+          </section>
+    </div>
+
+    <!-- javascript: -->
+    <script>
+
+        // function check_occurrence(array,value){
+        //     console.log(array,value);
+        //     var count = 0;
+        //     for(var i = 0; i < array.length; i++){
+        //         if(array[i].name == value){
+        //             count++;
+        //         }
+        //     }
+        //     return count;
+        // }
+
+        
+        function selectTeacher(){
+            var teacher = document.getElementById('teacher').value;
+            fetch('http://localhost:5000/allApplication')
+            .then(res => res.json())
+            .then(data => {
+              const newData=data.filter(item => item.teacher_name == teacher);
+              if(newData.length > 5){
+                alert("This teacher has already applied for 5 research assistants, please select another teacher.");
+                document.getElementById('teacher').value = "";
+              }
+            })
+        }
+
+        
+        function formData(){
+            var name = document.getElementById('name').value;
+            var email = document.getElementById('email').value;
+            var s_id = document.getElementById('s_id').value;
+            var teacher_name = document.getElementById('teacher').value;
+            var message = document.getElementById('message').value;
+
+            fetch('http://localhost:5000/applyForm', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    s_id: s_id,
+                    teacher_name: teacher_name,
+                    message: message
+                })
+            })
+            .then(res => res.json())
+            .then(data =>{
+                if(data){
+                    alert("Your application has been submitted successfully.!");
+                    location.reload();
+                }
+            })
+        }
+
+        fetch('http://localhost:5000/allTeacher')
+        .then(res => res.json())
+        .then(data =>{
+            var teacher = document.getElementById('teacher');
+            for(var i=0; i<data.length; i++){
+                var option = document.createElement('option');
+                option.value = data[i].name;
+                option.innerHTML = data[i].name;
+                teacher.appendChild(option);
+            }
+        })
+
+    </script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+</html>
